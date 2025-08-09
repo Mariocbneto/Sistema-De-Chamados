@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registrar Solicitação</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='Principal.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Sistema de Chamados</h1>
+      <div class="stats">
+        <div id="aberto" class="stat" onclick="window.location.href='Botoes.html?status=Aberto'">0 Aberto</div>
+        <div id="analise" class="stat" onclick="window.location.href='Botoes.html?status=Analise'">0 Análise</div>
+        <div id="fechado" class="stat" onclick="window.location.href='Botoes.html?status=Fechado'">0 Fechado</div>
+      </div>
+    </header>
+
+    <main>
+      <h2>Registrar Solicitação</h2>
+
+      <form id="solicitacaoForm">
+        <div class="form-group">
+          <label for="servico">Item do Catálogo de Serviços *</label>
+          <select id="servico" required>
+            <option value="">----</option>
+            <option value="token_expirado">TOKEN EXPIRADO</option>
+            <option value="vpn_expirada">VPN EXPIRADA</option>
+            <option value="manutencao_maquina">MANUTENÇÃO MÁQUINA</option>
+            <option value="daruma_scanner">DARUMA/SCANNER</option>
+            <option value="visita_aps">VISITA APS</option>
+            <option value="autenticador">AUTENTICADOR</option>
+            <option value="atendimento_remoto">ATENDIMENTO REMOTO</option>
+            <option value="troca_senha">TROCA DE SENHA</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="titulo">Título *</label>
+          <input
+            type="text"
+            id="titulo"
+            required
+            placeholder="Digite um título/nome para sua solicitação. (de 10 a 50 caracteres)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="descricao">Descrição *</label>
+          <textarea
+            id="descricao"
+            required
+            placeholder="Descreva sua solicitação com o maior número possível de informações."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="telefone">Número de telefone para contato: *</label>
+          <input
+            type="tel"
+            id="telefone"
+            required
+            placeholder="(DDD + Número)"
+          />
+          <p>Essa informação será utilizada exclusivamente para este atendimento.</p>
+        </div>
+
+        <button type="submit">Enviar Solicitação</button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    document.getElementById('solicitacaoForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const data = {
+        servico: document.getElementById('servico').value,
+        titulo: document.getElementById('titulo').value,
+        descricao: document.getElementById('descricao').value,
+        telefone: document.getElementById('telefone').value
+      };
+
+      fetch('/enviar_solicitacao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Solicitação enviada com sucesso!');
+        document.getElementById('solicitacaoForm').reset();
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao enviar a solicitação.');
+      });
+    });
+  </script>
+</body>
+</html>
