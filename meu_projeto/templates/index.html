@@ -63,8 +63,19 @@
             required
             placeholder="(DDD + Número)"
           />
-          <p>Essa informação será utilizada exclusivamente para este atendimento.</p>
+          
         </div>
+        <div class="form-group">
+          <label for="atendido_por">Atendido por:</label>
+           <input
+             type="text"
+              id="atendido_por"
+              placeholder="Nome do atendente"
+              required
+            />
+            <p>Essa informação será utilizada exclusivamente para este atendimento.</p>
+        </div>
+
 
         <button type="submit">Enviar Solicitação</button>
       </form>
@@ -79,7 +90,8 @@
         servico: document.getElementById('servico').value,
         titulo: document.getElementById('titulo').value,
         descricao: document.getElementById('descricao').value,
-        telefone: document.getElementById('telefone').value
+        telefone: document.getElementById('telefone').value,
+        atendido_por: document.getElementById('atendido_por').value
       };
 
       fetch('/enviar_solicitacao', {

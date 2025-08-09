@@ -20,9 +20,9 @@ def enviar_solicitacao():
         conn = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO solicitacoes (servico, titulo, descricao, telefone)
-            VALUES (%s, %s, %s, %s)
-        """, (data['servico'], data['titulo'], data['descricao'], data['telefone']))
+            INSERT INTO solicitacoes (servico, titulo, descricao, telefone, atendido_por)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (data['servico'], data['titulo'], data['descricao'], data['telefone'] , data['atendido_por']))
         conn.commit()
         return jsonify({'message': 'Solicitação enviada com sucesso!'}), 200
     except Exception as e:
