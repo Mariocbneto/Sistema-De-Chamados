@@ -11,9 +11,9 @@
     <header class="header">
       <h1>Sistema de Chamados</h1>
       <div class="stats">
-        <div id="aberto" class="stat" onclick="window.location.href='Botoes.html?status=Aberto'">0 Aberto</div>
-        <div id="analise" class="stat" onclick="window.location.href='Botoes.html?status=Analise'">0 Análise</div>
-        <div id="fechado" class="stat" onclick="window.location.href='Botoes.html?status=Fechado'">0 Fechado</div>
+        <div id="aberto" class="stat" onclick="window.location.href='/listar_chamados?status=Aberto'">{{ aberto }} Aberto</div>
+        <div id="analise" class="stat" onclick="window.location.href='/listar_chamados?status=Analise'">{{ analise }} Análise</div>
+        <div id="fechado" class="stat" onclick="window.location.href='/listar_chamados?status=Fechado'">{{ fechado }} Fechado</div>
       </div>
     </header>
 
@@ -62,20 +62,21 @@
             id="telefone"
             required
             placeholder="(DDD + Número)"
+            pattern="[0-9]{10,15}"
+            title="Digite um número de telefone válido (10 a 15 dígitos, sem espaços ou caracteres especiais)"
           />
-          
         </div>
+        
         <div class="form-group">
           <label for="atendido_por">Atendido por:</label>
-           <input
-             type="text"
-              id="atendido_por"
-              placeholder="Nome do atendente"
-              required
-            />
-            <p>Essa informação será utilizada exclusivamente para este atendimento.</p>
+          <input
+            type="text"
+            id="atendido_por"
+            placeholder="Nome do atendente"
+            required
+          />
+          <p>Essa informação será utilizada exclusivamente para este atendimento.</p>
         </div>
-
 
         <button type="submit">Enviar Solicitação</button>
       </form>

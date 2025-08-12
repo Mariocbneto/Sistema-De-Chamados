@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tabela de Chamados - {{ status }}</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+  }
+  thead tr {
+    background-color: #f1f1f1;
+    border-top: 1px solid #d1d1d1;
+    border-bottom: 2px solid #d1d1d1;
+  }
+  thead th {
+    padding: 7px 8px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: #2f4e8c;
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  tbody tr:last-child {
+    border-bottom: 2px solid #2f4e8c;
+  }
+  tbody td {
+    padding: 7px 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #222;
+    font-size: 11.5px;
+  }
+  tbody td.status-cell {
+    text-align: center;
+    white-space: nowrap;
+  }
+  tbody td a {
+    color: #2f4e8c;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  tbody td a:hover, thead th:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .status-radio {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #c4c4c4;
+    box-shadow: 0 2px 5px rgb(47 78 140 / 0.1);
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+  <h2>Chamados - {{ status }}</h2>
+  <div class="table-wrapper" aria-label="Tabela de chamados com informações sobre status, datas e responsáveis">
+    <table role="grid" aria-readonly="true">
+      <thead>
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">ID</th>
+          <th scope="col">Status</th>
+          <th scope="col">Data de abertura</th>
+          <th scope="col">Última atualização</th>
+          <th scope="col">Serviço</th>
+          <th scope="col">Atendido por</th>
+          <th scope="col">Telefone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for chamado in chamados %}
+        <tr>
+          <td><a href="#" title="Visualizar chamado {{ chamado[1] }}">{{ chamado[1] }}</a></td>
+          <td>{{ chamado[0] }}</td>
+          <td class="status-cell">{{ chamado[2] }}</td>
+          <td>{{ chamado[3] }}</td>
+          <td>{{ chamado[3] }}</td> <!-- Por enquanto usando a mesma data -->
+          <td>{{ chamado[5] }}</td>
+          <td>{{ chamado[6] }}</td>
+          <td>{{ chamado[4] }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" style="text-align: center;">Nenhum chamado encontrado para este status.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
