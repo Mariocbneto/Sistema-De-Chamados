@@ -24,15 +24,12 @@ def index():
         cursor.close()
         conn.close()
 
-        # Inicializa com zero para cada status esperado
         status_counts = {'Aberto': 0, 'Analise': 0, 'Fechado': 0}
-
         for status, count in counts:
-            # Tratar possíveis variações no nome do status
             st = status.lower()
             if st == 'aberto':
                 status_counts['Aberto'] = count
-            elif st == 'analise' or st == 'análise':
+            elif st in ['analise', 'análise']:
                 status_counts['Analise'] = count
             elif st == 'fechado':
                 status_counts['Fechado'] = count
@@ -69,7 +66,7 @@ def enviar_solicitacao():
 
 @app.route('/listar_chamados')
 def listar_chamados():
-    status = request.args.get('status', 'Aberto')  # valor padrão
+    status = request.args.get('status', 'Aberto')
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -85,6 +82,67 @@ def listar_chamados():
         return render_template('Botoes.html', chamados=rows, status=status)
     except Exception as e:
         return f"Erro ao listar chamados: {e}", 500
+
+@app.route('/chamado/<int:id_chamado>')
+def ver_chamado(id_chamado):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, titulo, descricao, telefone, servico, atendido_por, status, data_criacao
+            FROM solicitacoes
+            WHERE id = %s
+        """, (id_chamado,))
+        chamado = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if not chamado:
+            return "Chamado não encontrado", 404
+
+        return render_template('detalhe_chamado.html', chamado=chamado)
+    except Exception as e:
+        return f"Erro ao carregar detalhes do chamado: {e}", 500
+
+@app.route('/atribuir/<int:id_chamado>', methods=['POST'])
+def atribuir_chamado(id_chamado):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE solicitacoes
+            SET status = 'Analise'
+            WHERE id = %s
+        """, (id_chamado,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return render_template("mensagem.html", mensagem="Chamado atribuído com sucesso!")
+    except Exception as e:
+        return f"Erro ao atribuir chamado: {e}", 500
+
+@app.route('/detalhes_chamado/<int:id_chamado>')
+def detalhes_chamado(id_chamado):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, titulo, descricao, status, data_criacao, telefone, servico, atendido_por
+            FROM solicitacoes
+            WHERE id = %s
+        """, (id_chamado,))
+        chamado = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if chamado is None:
+            return f"Chamado com ID {id_chamado} não encontrado.", 404
+
+        return render_template('detalhes_chamado.html', chamado=chamado)
+    except Exception as e:
+        return f"Erro ao buscar detalhes do chamado: {e}", 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

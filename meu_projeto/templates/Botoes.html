@@ -96,11 +96,15 @@
       <tbody>
         {% for chamado in chamados %}
         <tr>
-          <td><a href="#" title="Visualizar chamado {{ chamado[1] }}">{{ chamado[1] }}</a></td>
+          <td>
+            <a href="{{ url_for('detalhes_chamado', id_chamado=chamado[0]) }}" title="Visualizar chamado {{ chamado[1] }}">
+              {{ chamado[1] }}
+            </a>
+          </td>
           <td>{{ chamado[0] }}</td>
           <td class="status-cell">{{ chamado[2] }}</td>
           <td>{{ chamado[3] }}</td>
-          <td>{{ chamado[3] }}</td> <!-- Por enquanto usando a mesma data -->
+          <td>{{ chamado[3] }}</td>
           <td>{{ chamado[5] }}</td>
           <td>{{ chamado[6] }}</td>
           <td>{{ chamado[4] }}</td>
