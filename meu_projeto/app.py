@@ -132,12 +132,19 @@ def detalhes_chamado(id_chamado):
             FROM solicitacoes
             WHERE id = %s
         """, (id_chamado,))
-        chamado = cursor.fetchone()
+        row = cursor.fetchone()
+
+        if row is None:
+            cursor.close()
+            conn.close()
+            return f"Chamado com ID {id_chamado} não encontrado.", 404
+
+        # cria um dict para facilitar acesso no template
+        colnames = [desc[0] for desc in cursor.description]
+        chamado = dict(zip(colnames, row))
+
         cursor.close()
         conn.close()
-
-        if chamado is None:
-            return f"Chamado com ID {id_chamado} não encontrado.", 404
 
         return render_template('detalhes_chamado.html', chamado=chamado)
     except Exception as e:

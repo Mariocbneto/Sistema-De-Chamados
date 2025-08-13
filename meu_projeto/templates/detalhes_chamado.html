@@ -65,15 +65,30 @@
 <body>
 
   <h1>Detalhes do Chamado</h1>
+
   <div>
     <label for="descricao">Descrição <span class="required">*</span></label>
-    
     <textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
   </div>
 
-  <div class="attributed-box" tabindex="0" role="button" aria-pressed="false" onclick="alert('Botão Atribuir a mim clicado');" onkeydown="if(event.key==='Enter' || event.key===' ') { event.preventDefault(); this.click(); }">
+  <div 
+    class="attributed-box" 
+    tabindex="0" 
+    role="button" 
+    aria-pressed="false" 
+    onclick="atribuirAteMim(this)" 
+    onkeydown="if(event.key==='Enter' || event.key===' ') { event.preventDefault(); this.click(); }"
+  >
     Atribuir a mim
   </div>
+
+  <script>
+    function atribuirAteMim(button) {
+      alert('Botão Atribuir a mim clicado');
+      button.setAttribute('aria-pressed', 'true');
+      // Aqui você pode chamar uma requisição POST para atribuir o chamado via API
+    }
+  </script>
 
   <br/>
   <a href="{{ url_for('listar_chamados') }}">Voltar para a lista de chamados</a>
