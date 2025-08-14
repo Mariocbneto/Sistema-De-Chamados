@@ -78,46 +78,33 @@
 </style>
 </head>
 <body>
-  <h2>Chamados - {{ status }}</h2>
-  <div class="table-wrapper" aria-label="Tabela de chamados com informações sobre status, datas e responsáveis">
-    <table role="grid" aria-readonly="true">
-      <thead>
-        <tr>
-          <th scope="col">Nome</th>
-          <th scope="col">ID</th>
-          <th scope="col">Status</th>
-          <th scope="col">Data de abertura</th>
-          <th scope="col">Última atualização</th>
-          <th scope="col">Serviço</th>
-          <th scope="col">Atendido por</th>
-          <th scope="col">Telefone</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for chamado in chamados %}
-        <tr>
-          <td>
-            <a href="{{ url_for('detalhes_chamado', id_chamado=chamado[0]) }}" title="Visualizar chamado {{ chamado[1] }}">
-              {{ chamado[1] }}
-            </a>
-          </td>
-          <td>{{ chamado[0] }}</td>
-          <td class="status-cell">{{ chamado[2] }}</td>
-          <td>{{ chamado[3] }}</td>
-          <td>{{ chamado[3] }}</td>
-          <td>{{ chamado[5] }}</td>
-          <td>{{ chamado[6] }}</td>
-          <td>{{ chamado[4] }}</td> <!--Tem que deixar nessa ordem mesmo se nao buga-->
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="8" style="text-align: center;">Nenhum chamado encontrado para este status.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
+<h2>Chamados - {{ status }}</h2>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th><th>ID</th><th>Status</th><th>Data de abertura</th><th>Última atualização</th><th>Serviço</th><th>Atendido por</th><th>Telefone</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for chamado in chamados %}
+      <tr>
+        <td><a href="{{ url_for('detalhes_chamado', id_chamado=chamado[0]) }}">{{ chamado[1] }}</a></td>
+        <td>{{ chamado[0] }}</td>
+        <td class="status-cell">{{ chamado[2] }}</td>
+        <td>{{ chamado[3] }}</td>
+        <td>{{ chamado[3] }}</td>
+        <td>{{ chamado[5] }}</td>
+        <td>{{ chamado[6] }}</td>
+        <td>{{ chamado[4] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;">Nenhum chamado encontrado para este status.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 </body>
 </html>

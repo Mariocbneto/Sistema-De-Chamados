@@ -79,82 +79,49 @@
 
 </head>
 <body>
-  
 
 <h1>Detalhes do Chamado</h1>
 
-<div>
-  <label for="descricao">Descrição <span class="required">*</span></label>
-  <textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
-</div>
+<label for="descricao">Descrição <span class="required">*</span></label>
+<textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
 
 {% if chamado.status == 'Aberto' %}
-  <div style="margin-top: 15px;">
-    <label for="responsavel">Seu nome <span class="required">*</span></label>
-    <input type="text" id="responsavel" placeholder="Digite seu nome">
-  </div>
-
-  <button class="action-button" onclick="atribuirAteMim()">
-    Atribuir a mim
-  </button>
+  <label for="responsavel">Seu nome <span class="required">*</span></label>
+  <input type="text" id="responsavel" placeholder="Digite seu nome">
+  <button class="action-button" onclick="atribuirAteMim()">Atribuir a mim</button>
 {% elif chamado.status == 'Analise' %}
-  <button class="action-button" onclick="fecharChamado()">
-    Fechar Chamado
-  </button>
+  <button class="action-button" onclick="fecharChamado()">Fechar Chamado</button>
 {% endif %}
 
 <script>
 function atribuirAteMim() {
   const nome = document.getElementById('responsavel').value.trim();
-  if (!nome) {
-    alert('Por favor, digite seu nome antes de atribuir.');
-    return;
-  }
-
+  if (!nome) { alert('Digite seu nome'); return; }
   fetch(`/atribuir/{{ chamado.id }}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ atendido_por: nome })
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({atendido_por:nome})
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.error) {
-      alert('Erro: ' + data.error);
-      return;
-    }
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.error){ alert(data.error); return; }
     alert(data.message);
-    window.location.href = '/listar_chamados?status=Analise';
-  })
-  .catch(err => {
-    console.error('Erro:', err);
-    alert('Ocorreu um erro ao atribuir o chamado.');
+    window.location.replace('/listar_chamados?status=Analise');
   });
 }
 
 function fecharChamado() {
-  fetch(`/fechar/{{ chamado.id }}`, {
-    method: 'POST'
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.error) {
-      alert('Erro: ' + data.error);
-      return;
-    }
+  fetch(`/fechar/{{ chamado.id }}`, { method:'POST' })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.error){ alert(data.error); return; }
     alert(data.message);
-    window.location.href = '/listar_chamados?status=Fechados';
-  })
-  .catch(err => {
-    console.error('Erro:', err);
-    alert('Ocorreu um erro ao fechar o chamado.');
+    window.location.replace('/listar_chamados?status=Fechados');
   });
 }
 </script>
 
 
-</br>
-
-<a href="{{ url_for('listar_chamados') }}">Voltar para a lista de chamados</a>
 
 </body>
 </html>
