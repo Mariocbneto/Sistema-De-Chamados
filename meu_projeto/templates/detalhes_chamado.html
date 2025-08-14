@@ -79,6 +79,7 @@
 
 </head>
 <body>
+  
 
 <h1>Detalhes do Chamado</h1>
 
@@ -87,7 +88,7 @@
   <textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
 </div>
 
-{% if chamado.status != 'Analise' %}
+{% if chamado.status == 'Aberto' %}
   <div style="margin-top: 15px;">
     <label for="responsavel">Seu nome <span class="required">*</span></label>
     <input type="text" id="responsavel" placeholder="Digite seu nome">
@@ -96,7 +97,7 @@
   <button class="action-button" onclick="atribuirAteMim()">
     Atribuir a mim
   </button>
-{% else %}
+{% elif chamado.status == 'Analise' %}
   <button class="action-button" onclick="fecharChamado()">
     Fechar Chamado
   </button>
@@ -149,6 +150,8 @@ function fecharChamado() {
   });
 }
 </script>
+
+
 </br>
 
 <a href="{{ url_for('listar_chamados') }}">Voltar para a lista de chamados</a>
