@@ -11,17 +11,15 @@
     background: #f5f5f5;
     padding: 20px;
   }
+  h1 {
+    margin-bottom: 20px;
+  }
   label {
     font-weight: bold;
     font-size: 1rem;
   }
   .required {
     color: red;
-  }
-  small {
-    display: block;
-    color: #666;
-    margin: 4px 0 8px 0;
   }
   textarea {
     width: 100%;
@@ -39,7 +37,19 @@
     border-color: #287bff;
     box-shadow: 0 0 4px 1px #287bff44;
   }
-  .attributed-box {
+  input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: #287bff;
+    box-shadow: 0 0 4px 1px #287bff44;
+  }
+  .action-button {
     margin-top: 15px;
     width: 150px;
     padding: 10px 0;
@@ -51,47 +61,97 @@
     cursor: pointer;
     user-select: none;
     transition: background-color 0.3s ease;
+    border: none;
   }
-  .attributed-box:hover {
+  .action-button:hover {
     background-color: #1c53c4;
   }
-  .info-label {
-    font-weight: bold;
-    margin-top: 10px;
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #287bff;
+  }
+  a:hover {
+    text-decoration: underline;
   }
 </style>
 
 </head>
 <body>
 
-  <h1>Detalhes do Chamado</h1>
+<h1>Detalhes do Chamado</h1>
 
-  <div>
-    <label for="descricao">Descrição <span class="required">*</span></label>
-    <textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
+<div>
+  <label for="descricao">Descrição <span class="required">*</span></label>
+  <textarea id="descricao" readonly>{{ chamado.descricao }}</textarea>
+</div>
+
+{% if chamado.status != 'Analise' %}
+  <div style="margin-top: 15px;">
+    <label for="responsavel">Seu nome <span class="required">*</span></label>
+    <input type="text" id="responsavel" placeholder="Digite seu nome">
   </div>
 
-  <div 
-    class="attributed-box" 
-    tabindex="0" 
-    role="button" 
-    aria-pressed="false" 
-    onclick="atribuirAteMim(this)" 
-    onkeydown="if(event.key==='Enter' || event.key===' ') { event.preventDefault(); this.click(); }"
-  >
+  <button class="action-button" onclick="atribuirAteMim()">
     Atribuir a mim
-  </div>
+  </button>
+{% else %}
+  <button class="action-button" onclick="fecharChamado()">
+    Fechar Chamado
+  </button>
+{% endif %}
 
-  <script>
-    function atribuirAteMim(button) {
-      alert('Botão Atribuir a mim clicado');
-      button.setAttribute('aria-pressed', 'true');
-      // Aqui você pode chamar uma requisição POST para atribuir o chamado via API
+<script>
+function atribuirAteMim() {
+  const nome = document.getElementById('responsavel').value.trim();
+  if (!nome) {
+    alert('Por favor, digite seu nome antes de atribuir.');
+    return;
+  }
+
+  fetch(`/atribuir/{{ chamado.id }}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ atendido_por: nome })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert('Erro: ' + data.error);
+      return;
     }
-  </script>
+    alert(data.message);
+    window.location.href = '/listar_chamados?status=Analise';
+  })
+  .catch(err => {
+    console.error('Erro:', err);
+    alert('Ocorreu um erro ao atribuir o chamado.');
+  });
+}
 
-  <br/>
-  <a href="{{ url_for('listar_chamados') }}">Voltar para a lista de chamados</a>
+function fecharChamado() {
+  fetch(`/fechar/{{ chamado.id }}`, {
+    method: 'POST'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert('Erro: ' + data.error);
+      return;
+    }
+    alert(data.message);
+    window.location.href = '/listar_chamados?status=Fechados';
+  })
+  .catch(err => {
+    console.error('Erro:', err);
+    alert('Ocorreu um erro ao fechar o chamado.');
+  });
+}
+</script>
+</br>
+
+<a href="{{ url_for('listar_chamados') }}">Voltar para a lista de chamados</a>
 
 </body>
 </html>

@@ -50,7 +50,7 @@ def enviar_solicitacao():
         """, (
             data['servico'],
             data['titulo'],
-            data['descricao'],
+            data['descricao'],  # descrição agora garantida no envio
             data['telefone'],
             data['atendido_por'],
             'Aberto'
@@ -107,20 +107,43 @@ def ver_chamado(id_chamado):
 @app.route('/atribuir/<int:id_chamado>', methods=['POST'])
 def atribuir_chamado(id_chamado):
     try:
+        data = request.get_json()
+        atendente = data.get('atendido_por', '')
+
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
             UPDATE solicitacoes
-            SET status = 'Analise'
+            SET status = 'Analise',
+                atendido_por = %s
+            WHERE id = %s
+        """, (atendente, id_chamado))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({'message': 'Chamado atribuído com sucesso!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/fechar/<int:id_chamado>', methods=['POST'])
+def fechar_chamado(id_chamado):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE solicitacoes
+            SET status = 'Fechado'
             WHERE id = %s
         """, (id_chamado,))
         conn.commit()
         cursor.close()
         conn.close()
 
-        return render_template("mensagem.html", mensagem="Chamado atribuído com sucesso!")
+        return jsonify({'message': 'Chamado fechado com sucesso!'})
     except Exception as e:
-        return f"Erro ao atribuir chamado: {e}", 500
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/detalhes_chamado/<int:id_chamado>')
 def detalhes_chamado(id_chamado):
